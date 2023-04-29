@@ -5,40 +5,28 @@ import me.edwardosei.departmentservice.dto.DepartmentDto;
 import me.edwardosei.departmentservice.entity.Department;
 import me.edwardosei.departmentservice.repository.DepartmentRepository;
 import me.edwardosei.departmentservice.service.DepartmentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 public class DepartmentServiceImpl implements DepartmentService {
     private DepartmentRepository departmentRepository;
+
+    private ModelMapper modelMapper;
 
     @Override
     public DepartmentDto saveDepartment(DepartmentDto departmentDto) {
         // convert department dto to department jpa entity
-        Department department = new Department(
-                departmentDto.getId(),
-                departmentDto.getDepartmentName(),
-                departmentDto.getDepartmentDescription(),
-                departmentDto.getDepartmentCode()
-        );
+        Department department = modelMapper.map(departmentDto, Department.class);
         Department savedDepartment = departmentRepository.save(department);
         // convert department jpa entity to department dto
-        return new DepartmentDto(
-                savedDepartment.getId(),
-                savedDepartment.getDepartmentName(),
-                savedDepartment.getDepartmentDescription(),
-                savedDepartment.getDepartmentCode()
-        );
+        return modelMapper.map(savedDepartment, DepartmentDto.class);
     }
 
     @Override
     public DepartmentDto getDepartmentByCode(String departmentCode) {
         Department department = departmentRepository.findByDepartmentCode(departmentCode);
-        return new DepartmentDto(
-                department.getId(),
-                department.getDepartmentName(),
-                department.getDepartmentDescription(),
-                department.getDepartmentCode()
-        );
+        return modelMapper.map(department, DepartmentDto.class);
     }
 }
