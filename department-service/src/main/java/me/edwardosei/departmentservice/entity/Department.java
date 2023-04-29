@@ -1,5 +1,6 @@
 package me.edwardosei.departmentservice.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,5 +23,6 @@ public class Department {
     private Long id;
     private String departmentName;
     private String departmentDescription;
+    @Column(nullable = false, unique = true)
     private String departmentCode;
 }

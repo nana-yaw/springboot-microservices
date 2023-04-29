@@ -26,9 +26,9 @@ public class DepartmentController {
     }
 
     // Build get department REST API
-    @GetMapping("{department-code}")
-    public ResponseEntity<DepartmentDto> getDepartment(@PathVariable("department-code") String departmentCode) {
-        DepartmentDto departmentDto = departmentService.getDepartmentByCode(departmentCode);
+    @GetMapping("{id}")
+    public ResponseEntity<DepartmentDto> getDepartmentById(@PathVariable("id") Long departmentId) {
+        DepartmentDto departmentDto = departmentService.getDepartmentById(departmentId);
         return  new ResponseEntity<>(departmentDto, HttpStatus.OK);
     }
 }
