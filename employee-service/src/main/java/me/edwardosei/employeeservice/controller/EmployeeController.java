@@ -28,7 +28,7 @@ public class EmployeeController {
     // Get an employee REST API endpoint
     @GetMapping("{employee-email}")
     public ResponseEntity<EmployeeDto> getEmployee(@PathVariable("employee-email") String employeeEmail) {
-        EmployeeDto employeeDto = employeeService.getEmployee(employeeEmail);
+        EmployeeDto employeeDto = employeeService.getEmployeeByEmail(employeeEmail);
         return new ResponseEntity<>(employeeDto, HttpStatus.OK);
     }
 }
