@@ -3,6 +3,7 @@ package me.edwardosei.employeeservice.service.impl;
 import lombok.AllArgsConstructor;
 import me.edwardosei.employeeservice.dto.EmployeeDto;
 import me.edwardosei.employeeservice.entity.Employee;
+import me.edwardosei.employeeservice.mapper.AutoEmployeeMapper;
 import me.edwardosei.employeeservice.repository.EmployeeRepository;
 import me.edwardosei.employeeservice.service.EmployeeService;
 import org.modelmapper.ModelMapper;
@@ -18,14 +19,15 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
         // convert employee dto to employee jpa entity
-        Employee employee = modelMapper.map(employeeDto, Employee.class);
+//        Employee employee = modelMapper.map(employeeDto, Employee.class);
+        Employee employee = AutoEmployeeMapper.MAPPER.mapToEmployee(employeeDto);
         Employee savedEmployee = employeeRepository.save(employee);
-        return modelMapper.map(savedEmployee, EmployeeDto.class);
+        return AutoEmployeeMapper.MAPPER.mapToEmployeeDto(savedEmployee);
     }
 
     @Override
     public EmployeeDto getEmployeeByEmail(String employeeEmail) {
         Employee employee = employeeRepository.findByEmail(employeeEmail);
-        return modelMapper.map(employee, EmployeeDto.class);
+        return AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
     }
 }
