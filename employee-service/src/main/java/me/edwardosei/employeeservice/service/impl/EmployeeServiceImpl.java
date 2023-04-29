@@ -29,4 +29,15 @@ public class EmployeeServiceImpl implements EmployeeService {
                 savedEmployee.getEmail()
         );
     }
+
+    @Override
+    public EmployeeDto getEmployee(String employeeEmail) {
+        Employee employee = employeeRepository.findByEmail(employeeEmail);
+        return new EmployeeDto(
+                employee.getId(),
+                employee.getFirstName(),
+                employee.getLastName(),
+                employee.getEmail()
+        );
+    }
 }
