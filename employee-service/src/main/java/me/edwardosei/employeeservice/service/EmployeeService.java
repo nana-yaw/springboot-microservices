@@ -4,5 +4,5 @@ import me.edwardosei.employeeservice.dto.EmployeeDto;
 
 public interface EmployeeService {
     EmployeeDto saveEmployee(EmployeeDto employeeDto);
-    EmployeeDto getEmployeeByEmail(String employeeEmail);
+    EmployeeDto getEmployeeById(Long employeeId);
 }
