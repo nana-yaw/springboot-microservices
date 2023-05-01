@@ -9,6 +9,7 @@ import me.edwardosei.employeeservice.exception.EmailAlreadyExistsException;
 import me.edwardosei.employeeservice.exception.ResourceNotFoundException;
 import me.edwardosei.employeeservice.mapper.AutoEmployeeMapper;
 import me.edwardosei.employeeservice.repository.EmployeeRepository;
+import me.edwardosei.employeeservice.service.APIClient;
 import me.edwardosei.employeeservice.service.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 //    private ModelMapper modelMapper;
 
-    private WebClient webClient;
+//    private WebClient webClient;
+    private APIClient apiClient;
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
@@ -58,11 +60,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 //                        "http://localhost:8080/api/departments/" + employee.getDepartmentCode(),
 //                        DepartmentDto.class);
 
-        DepartmentDto departmentDto = webClient.get()
-                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
-                .retrieve()
-                .bodyToMono(DepartmentDto.class)
-                .block();
+//        DepartmentDto departmentDto = webClient.get()
+//                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+//                .retrieve()
+//                .bodyToMono(DepartmentDto.class)
+//                .block();
+
+        DepartmentDto departmentDto = apiClient.getDepartment(employeeDto.getDepartmentCode());
 
         ApiResponseDto apiResponseDto = new ApiResponseDto();
         apiResponseDto.setEmployee(employeeDto);
