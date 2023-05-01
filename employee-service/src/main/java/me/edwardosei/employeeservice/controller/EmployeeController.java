@@ -1,6 +1,7 @@
 package me.edwardosei.employeeservice.controller;
 
 import lombok.AllArgsConstructor;
+import me.edwardosei.employeeservice.dto.ApiResponseDto;
 import me.edwardosei.employeeservice.dto.EmployeeDto;
 import me.edwardosei.employeeservice.service.EmployeeService;
 import org.springframework.http.HttpStatus;
@@ -27,8 +28,8 @@ public class EmployeeController {
 
     // Get an employee REST API endpoint
     @GetMapping("{id}")
-    public ResponseEntity<EmployeeDto> getEmployee(@PathVariable("id") Long employeeId) {
-        EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
-        return new ResponseEntity<>(employeeDto, HttpStatus.OK);
+    public ResponseEntity<ApiResponseDto> getEmployee(@PathVariable("id") Long employeeId) {
+        ApiResponseDto apiResponseDto = employeeService.getEmployeeById(employeeId);
+        return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 }
