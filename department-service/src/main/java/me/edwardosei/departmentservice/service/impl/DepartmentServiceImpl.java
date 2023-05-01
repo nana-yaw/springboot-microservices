@@ -43,4 +43,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         );
         return AutoDepartmentMapper.MAPPER.mapToDepartmentDto(department);
     }
+
+    @Override
+    public DepartmentDto getDepartment(String departmentCode) {
+        Department department = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
+                () -> new ResourceNotFoundException("Department", "departmentCode", departmentCode)
+        );
+        return AutoDepartmentMapper.MAPPER.mapToDepartmentDto(department);
+    }
 }

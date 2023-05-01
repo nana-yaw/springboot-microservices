@@ -25,10 +25,17 @@ public class DepartmentController {
         return new ResponseEntity<>(savedDepartmentDto, HttpStatus.CREATED);
     }
 
-    // Build get department REST API
+    // Build get department by ID REST API
     @GetMapping("{id}")
     public ResponseEntity<DepartmentDto> getDepartmentById(@PathVariable("id") Long departmentId) {
         DepartmentDto departmentDto = departmentService.getDepartmentById(departmentId);
+        return  new ResponseEntity<>(departmentDto, HttpStatus.OK);
+    }
+
+    // Build get department by department code REST API
+    @GetMapping("{department-code}")
+    public ResponseEntity<DepartmentDto> getDepartmentById(@PathVariable("department-code") String departmentCode) {
+        DepartmentDto departmentDto = departmentService.getDepartment(departmentCode);
         return  new ResponseEntity<>(departmentDto, HttpStatus.OK);
     }
 }
