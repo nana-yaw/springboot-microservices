@@ -1,6 +1,7 @@
 package me.edwardosei.employeeservice.service.impl;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import me.edwardosei.employeeservice.dto.ApiResponseDto;
 import me.edwardosei.employeeservice.dto.DepartmentDto;
@@ -13,6 +14,8 @@ import me.edwardosei.employeeservice.repository.EmployeeRepository;
 import me.edwardosei.employeeservice.service.APIClient;
 import me.edwardosei.employeeservice.service.EmployeeService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeServiceImpl.class);
     private EmployeeRepository employeeRepository;
 
 //    private RestTemplate restTemplate;
@@ -50,8 +55,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // Get an employee record with its respective department record.
     @Override
-    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+//    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+    @Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
     public ApiResponseDto getEmployeeById(Long employeeId) {
+        LOGGER.info("inside getEmployeeById method");
+
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> new ResourceNotFoundException("Employee", "id", employeeId)
         );
@@ -78,6 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     public ApiResponseDto getDefaultDepartment(Long employeeId, Exception exception) {
+        LOGGER.info("inside getDefaultDepartment fallback method");
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> new ResourceNotFoundException("Employee", "id", employeeId)
         );
