@@ -1,5 +1,6 @@
 package me.edwardosei.employeeservice.service.impl;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.AllArgsConstructor;
 import me.edwardosei.employeeservice.dto.ApiResponseDto;
 import me.edwardosei.employeeservice.dto.DepartmentDto;
@@ -49,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     // Get an employee record with its respective department record.
     @Override
+    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
     public ApiResponseDto getEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> new ResourceNotFoundException("Employee", "id", employeeId)
