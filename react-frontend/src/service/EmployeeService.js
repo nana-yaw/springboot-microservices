@@ -7,9 +7,9 @@ const EMPLOYEE_ID = 1;
 class EmployeeService {
 
     getEmployee() {
-        axios.get(EMPLOYEE_SERVICE_BASE_URL + '/' + EMPLOYEE_ID);
+        return axios.get(EMPLOYEE_SERVICE_BASE_URL + '/' + EMPLOYEE_ID);
     }
 }
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default new EmployeeService();
+// eslint-disable-next-line import/no-anonymous-default-export, new-parens
+export default new EmployeeService;
