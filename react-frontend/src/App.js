@@ -3,7 +3,7 @@ import EmployeeComponent from './component/EmployeeComponent';
 
 function App() {
   return (
-    <div className="App">
+    <div className="container">
       <EmployeeComponent />
       {/* <header className="App-header">
         <h1>Hello, World!</h1>
