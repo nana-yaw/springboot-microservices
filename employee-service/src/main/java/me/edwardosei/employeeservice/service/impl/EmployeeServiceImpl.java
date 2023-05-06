@@ -1,26 +1,22 @@
 package me.edwardosei.employeeservice.service.impl;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.AllArgsConstructor;
 import me.edwardosei.employeeservice.dto.ApiResponseDto;
 import me.edwardosei.employeeservice.dto.DepartmentDto;
 import me.edwardosei.employeeservice.dto.EmployeeDto;
+import me.edwardosei.employeeservice.dto.OrganizationDto;
 import me.edwardosei.employeeservice.entity.Employee;
 import me.edwardosei.employeeservice.exception.EmailAlreadyExistsException;
 import me.edwardosei.employeeservice.exception.ResourceNotFoundException;
 import me.edwardosei.employeeservice.mapper.AutoEmployeeMapper;
 import me.edwardosei.employeeservice.repository.EmployeeRepository;
-import me.edwardosei.employeeservice.service.APIClient;
+import me.edwardosei.employeeservice.service.DepartmentServiceAPIClient;
 import me.edwardosei.employeeservice.service.EmployeeService;
-import org.modelmapper.ModelMapper;
+import me.edwardosei.employeeservice.service.OrganizationServiceAPIClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 
@@ -36,7 +32,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 //    private ModelMapper modelMapper;
 
 //    private WebClient webClient;
-    private APIClient apiClient;
+    private DepartmentServiceAPIClient departmentServiceApiClient;
+
+    private OrganizationServiceAPIClient organizationServiceAPIClient;
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
@@ -56,7 +54,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     // Get an employee record with its respective department record.
     @Override
 //    @CircuitBreaker(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
-    @Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartment")
+    @Retry(name = "${spring.application.name}", fallbackMethod = "getDefaultDepartmentAndOrg")
     public ApiResponseDto getEmployeeById(Long employeeId) {
         LOGGER.info("inside getEmployeeById method");
 
@@ -76,17 +74,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 //                .bodyToMono(DepartmentDto.class)
 //                .block();
 
-        DepartmentDto departmentDto = apiClient.getDepartment(employeeDto.getDepartmentCode());
+        DepartmentDto departmentDto = departmentServiceApiClient.getDepartment(employeeDto.getDepartmentCode());
+        OrganizationDto organizationDto = organizationServiceAPIClient
+                .getOrganization(employeeDto.getOrganizationCode());
 
         ApiResponseDto apiResponseDto = new ApiResponseDto();
         apiResponseDto.setEmployee(employeeDto);
         apiResponseDto.setDepartment(departmentDto);
+        apiResponseDto.setOrganization(organizationDto);
 
         return apiResponseDto;
     }
 
-    public ApiResponseDto getDefaultDepartment(Long employeeId, Exception exception) {
-        LOGGER.info("inside getDefaultDepartment fallback method");
+    public ApiResponseDto getDefaultDepartmentAndOrg(Long employeeId, Exception exception) {
+        LOGGER.info("inside getDefaultDepartmentAndOrg fallback method");
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> new ResourceNotFoundException("Employee", "id", employeeId)
         );
@@ -97,9 +98,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         departmentDto.setDepartmentCode("RD001");
         departmentDto.setDepartmentDescription("Research & Development");
 
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setOrganizationCode("ABC_ORG");
+        organizationDto.setOrganizationName("ABC");
+        organizationDto.setOrganizationDescription("ABC Company Ltd");
+
         ApiResponseDto apiResponseDto = new ApiResponseDto();
         apiResponseDto.setEmployee(employeeDto);
         apiResponseDto.setDepartment(departmentDto);
+        apiResponseDto.setOrganization(organizationDto);
 
         return apiResponseDto;
     }
